@@ -68,17 +68,20 @@ curl -X POST http://localhost:8080 \
 ## 📊 Check Supabase Data
 
 View your data in Supabase:
-1. Go to: https://app.supabase.com/project/wnclwwvnyxmtkcukjrlc/editor
+1. Go to: https://app.supabase.com/ and select your project
 2. Click "Table Editor"
 3. Open `adapter_state` table
 4. See your video stats being tracked!
 
 ## 🔧 Your Credentials
 
-**Supabase URL**: `https://wnclwwvnyxmtkcukjrlc.supabase.co`
-**Anon Key**: Already in `.env` file
-**Service Role Key**: Already in `SUPABASE_SETUP.md`
-**Database Password**: `Vzm7KTmunj2W53D6`
+All credentials are stored securely in your `.env` file:
+- **Supabase URL**: Found in Settings > API in your Supabase dashboard
+- **Anon Key**: Found in Settings > API (anon/public key)
+- **Database Password**: Found in Settings > Database
+- **YouTube API Key**: From Google Cloud Console
+
+⚠️ **Never commit your `.env` file to git!**
 
 ## 📝 How It Works
 

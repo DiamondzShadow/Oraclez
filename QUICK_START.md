@@ -13,7 +13,7 @@ Your Supabase configuration files have been created! Here's what to do next:
 
 ### Step 1: Create the Database Table (1 min)
 
-1. Go to your Supabase dashboard: https://app.supabase.com/project/wnclwwvnyxmtkcukjrlc
+1. Go to your Supabase dashboard: https://app.supabase.com/ and select your project
 2. Click **"SQL Editor"** in the left sidebar
 3. Click **"New query"**
 4. Copy and paste the entire contents of `supabase-setup.sql`
@@ -61,8 +61,8 @@ You should see your test data there!
 
 ## 🔑 Your Configuration
 
-- **Supabase URL**: `https://wnclwwvnyxmtkcukjrlc.supabase.co`
-- **Service Role Key**: Already configured in `.env`
+- **Supabase URL**: Found in Settings > API in your Supabase dashboard
+- **Service Role Key**: Should be configured in `.env`
 - **Table Name**: `adapter_state`
 
 ## 🆘 Troubleshooting

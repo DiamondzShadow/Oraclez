@@ -4,15 +4,15 @@ This guide will help you set up your Supabase database for the YouTube Stats Cha
 
 ## Your Supabase Project Details
 
-Based on your service role key, your Supabase project details are:
-- **Project URL**: `https://wnclwwvnyxmtkcukjrlc.supabase.co`
-- **Project Ref**: `wnclwwvnyxmtkcukjrlc`
+Get your Supabase project details from your dashboard:
+- **Project URL**: Found in Settings > API
+- **Project Ref**: Your project identifier
 
 ## Step 1: Access Your Supabase Dashboard
 
 1. Go to [https://app.supabase.com](https://app.supabase.com)
 2. Log in to your account
-3. Select your project: `wnclwwvnyxmtkcukjrlc`
+3. Select your project from the dashboard
 
 ## Step 2: Run the SQL Migration
 
@@ -54,12 +54,12 @@ The table should have these columns:
    ```env
    PORT=8080
    YOUTUBE_API_KEY=your_youtube_api_key_here
-   SUPABASE_URL=https://wnclwwvnyxmtkcukjrlc.supabase.co
-   SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InduY2x3d3ZueXhtdGtjdWtqcmxjIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2MTI1NDI1MSwiZXhwIjoyMDc2ODMwMjUxfQ.KLbUGzoFKB7y4wFyywPP_gkulNOulC0bF4WDY-54Ac0
+   SUPABASE_URL=https://your-project.supabase.co
+   SUPABASE_ANON_KEY=your_supabase_anon_key_here
    INITIAL_LIKES_COUNT=0
    ```
 
-   **Note**: You're using the `service_role` key which has full database access. This is correct for server-side operations but keep it secure!
+   **Note**: Get your `SUPABASE_ANON_KEY` from Settings > API in your Supabase dashboard. Use the `anon/public` key for most operations, or `service_role` key if you need full database access (keep it secure!).
 
 ## Step 5: Get Your YouTube API Key
 

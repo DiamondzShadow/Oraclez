@@ -63,6 +63,6 @@ GRANT ALL ON adapter_state TO service_role;
 DO $$
 BEGIN
     RAISE NOTICE 'Supabase tables created successfully!';
-    RAISE NOTICE 'Your Supabase URL: https://wnclwwvnyxmtkcukjrlc.supabase.co';
+    RAISE NOTICE 'Check your Supabase URL in Settings > API';
     RAISE NOTICE 'Table: adapter_state';
 END $$;

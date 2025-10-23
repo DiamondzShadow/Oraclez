@@ -10,8 +10,8 @@
 - **Connection**: Using Session Pooler at `aws-1-us-east-2.pooler.supabase.com`
 
 ### 2. Environment Configuration ✅
-- Added YouTube API key: `AIzaSyAnFc7iHqA-Fcqx_PI043WdZumQYtYbPdI`
-- Configured Supabase URL: `https://wnclwwvnyxmtkcukjrlc.supabase.co`
+- Added YouTube API key: `[REDACTED - Stored in .env]`
+- Configured Supabase URL: `[REDACTED - Stored in .env]`
 - Set up anon key for API access
 - All environment variables in `.env` (protected by .gitignore)
 
@@ -69,7 +69,7 @@ curl -X POST http://localhost:8080 \
 
 ## 📊 View Your Data in Supabase
 
-**Dashboard**: https://app.supabase.com/project/wnclwwvnyxmtkcukjrlc/editor
+**Dashboard**: https://app.supabase.com/project/YOUR_PROJECT_ID/editor
 
 Navigate to: **Table Editor** → `adapter_state`
 
@@ -157,7 +157,7 @@ A  FINAL_SUMMARY.md            # This file
 
 ## 📞 Support & Resources
 
-**Supabase Dashboard**: https://app.supabase.com/project/wnclwwvnyxmtkcukjrlc
+**Supabase Dashboard**: https://app.supabase.com/
 **YouTube API Console**: https://console.cloud.google.com/
 **Chainlink Docs**: https://docs.chain.link/
 
