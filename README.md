@@ -2,6 +2,17 @@
 
 A Chainlink External Adapter that fetches YouTube video statistics (views and likes) and manages state using Supabase. This adapter triggers events based on configurable thresholds for views and likes.
 
+## 🚀 Quick Start
+
+**New to this project?** Follow these simple steps:
+
+1. **Set up your Supabase database**: See [SETUP_INSTRUCTIONS.md](./SETUP_INSTRUCTIONS.md) for a step-by-step guide
+2. **Configure environment**: Run `./quick-setup.sh` or manually copy `.env.example` to `.env`
+3. **Install dependencies**: `npm install`
+4. **Start the server**: `npm start`
+
+📖 **Detailed setup guide**: [SETUP_INSTRUCTIONS.md](./SETUP_INSTRUCTIONS.md)
+
 ## Features
 
 - 🎥 Fetches real-time YouTube video statistics (views and likes)
@@ -47,27 +58,21 @@ INITIAL_LIKES_COUNT=0
 
 ## Supabase Database Setup
 
-Create a table in your Supabase project with the following schema:
+**Important**: Run the complete SQL script from `supabase-setup.sql` in your Supabase SQL Editor.
 
-```sql
-CREATE TABLE adapter_state (
-    id TEXT PRIMARY KEY,
-    last_views_count INTEGER DEFAULT 0,
-    last_likes_count INTEGER DEFAULT 0,
-    last_likes_triggered_multiple INTEGER DEFAULT 0,
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
+The script will create:
+- `adapter_state` table with all required columns
+- Indexes for better performance
+- Row Level Security (RLS) policies
+- Automatic timestamp update triggers
+- A view for monitoring recent changes
 
--- Enable Row Level Security (optional but recommended)
-ALTER TABLE adapter_state ENABLE ROW LEVEL SECURITY;
+**Quick setup**:
+1. Go to [your Supabase SQL Editor](https://app.supabase.com/project/wnclwwvnyxmtkcukjrlc/sql/new)
+2. Copy and paste the contents of `supabase-setup.sql`
+3. Click "Run"
 
--- Create a policy that allows all operations (adjust based on your security needs)
-CREATE POLICY "Enable all operations for authenticated users"
-ON adapter_state
-FOR ALL
-USING (true)
-WITH CHECK (true);
-```
+For detailed instructions, see [SETUP_INSTRUCTIONS.md](./SETUP_INSTRUCTIONS.md)
 
 ## Getting API Keys
 
