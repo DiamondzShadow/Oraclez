@@ -88,15 +88,15 @@ curl -X POST http://localhost:8080 \
 ## 📊 Monitor Your Data in Supabase
 
 ### View Your Data:
-1. Go to: https://app.supabase.com/project/wnclwwvnyxmtkcukjrlc/editor
+1. Go to: https://app.supabase.com/ and select your project
 2. Click **Table Editor** (left sidebar)
 3. Open `adapter_state` table
 4. See real-time video stats
 
 ### Query via API:
 ```bash
-curl 'https://wnclwwvnyxmtkcukjrlc.supabase.co/rest/v1/adapter_state?select=*' \
-  -H "apikey: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InduY2x3d3ZueXhtdGtjdWtqcmxjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjEyNTQyNTEsImV4cCI6MjA3NjgzMDI1MX0.GChDM-cJGwWwXrWOiP2wVpnw-iOBXeOO94iznCovSjE"
+curl 'https://YOUR_PROJECT.supabase.co/rest/v1/adapter_state?select=*' \
+  -H "apikey: YOUR_SUPABASE_ANON_KEY"
 ```
 
 ---
