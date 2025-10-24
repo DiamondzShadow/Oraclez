@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.7;
 
-import "@chainlink/contracts/src/v0.8/ChainlinkClient.sol";
-import "@chainlink/contracts/src/v0.8/ConfirmedOwner.sol";
+import "@chainlink/contracts/src/v0.8/operatorforwarder/ChainlinkClient.sol";
+import "@chainlink/contracts/src/v0.8/shared/access/ConfirmedOwner.sol";
 
 /**
  * @title YouTubeOracleConsumer
@@ -53,7 +53,7 @@ contract YouTubeOracleConsumer is ChainlinkClient, ConfirmedOwner {
         string memory _youtubeVideoId
     ) ConfirmedOwner(msg.sender) {
         // Sepolia testnet LINK token
-        setChainlinkToken(0x779877A7B0D9E8603169DdbD7836e478b4624789);
+        _setChainlinkToken(0x779877A7B0D9E8603169DdbD7836e478b4624789);
         
         jobIdForViews = _jobIdForViews;
         jobIdForLikes = _jobIdForLikes;
@@ -70,16 +70,16 @@ contract YouTubeOracleConsumer is ChainlinkClient, ConfirmedOwner {
      * @return requestId The ID of the Chainlink request
      */
     function requestViews() public onlyOwner returns (bytes32 requestId) {
-        Chainlink.Request memory req = buildChainlinkRequest(
+        Chainlink.Request memory req = _buildChainlinkRequest(
             jobIdForViews,
             address(this),
             this.fulfillViews.selector
         );
 
-        req.add("videoId", youtubeVideoId);
-        req.add("endpoint", "views");
+        req._add("videoId", youtubeVideoId);
+        req._add("endpoint", "views");
 
-        return sendChainlinkRequest(req, fee);
+        return _sendChainlinkRequest(req, fee);
     }
 
     /**
@@ -88,16 +88,16 @@ contract YouTubeOracleConsumer is ChainlinkClient, ConfirmedOwner {
      * @return requestId The ID of the Chainlink request
      */
     function requestLikes() public onlyOwner returns (bytes32 requestId) {
-        Chainlink.Request memory req = buildChainlinkRequest(
+        Chainlink.Request memory req = _buildChainlinkRequest(
             jobIdForLikes,
             address(this),
             this.fulfillLikes.selector
         );
 
-        req.add("videoId", youtubeVideoId);
-        req.add("endpoint", "likes");
+        req._add("videoId", youtubeVideoId);
+        req._add("endpoint", "likes");
 
-        return sendChainlinkRequest(req, fee);
+        return _sendChainlinkRequest(req, fee);
     }
 
     /**
@@ -188,7 +188,7 @@ contract YouTubeOracleConsumer is ChainlinkClient, ConfirmedOwner {
      * @dev Only owner can withdraw
      */
     function withdrawLink() public onlyOwner {
-        LinkTokenInterface link = LinkTokenInterface(chainlinkTokenAddress());
+        LinkTokenInterface link = LinkTokenInterface(_chainlinkTokenAddress());
         require(
             link.transfer(msg.sender, link.balanceOf(address(this))),
             "Unable to transfer"
@@ -200,7 +200,7 @@ contract YouTubeOracleConsumer is ChainlinkClient, ConfirmedOwner {
      * @return balance LINK balance in Juels
      */
     function getLinkBalance() public view returns (uint256) {
-        LinkTokenInterface link = LinkTokenInterface(chainlinkTokenAddress());
+        LinkTokenInterface link = LinkTokenInterface(_chainlinkTokenAddress());
         return link.balanceOf(address(this));
     }
 }
