@@ -76,8 +76,8 @@ contract YouTubeOracleConsumer is ChainlinkClient, ConfirmedOwner {
             this.fulfillViews.selector
         );
 
-        req.add("videoId", youtubeVideoId);
-        req.add("endpoint", "views");
+        req._add("videoId", youtubeVideoId);
+        req._add("endpoint", "views");
 
         return _sendChainlinkRequest(req, fee);
     }
@@ -94,8 +94,8 @@ contract YouTubeOracleConsumer is ChainlinkClient, ConfirmedOwner {
             this.fulfillLikes.selector
         );
 
-        req.add("videoId", youtubeVideoId);
-        req.add("endpoint", "likes");
+        req._add("videoId", youtubeVideoId);
+        req._add("endpoint", "likes");
 
         return _sendChainlinkRequest(req, fee);
     }
