@@ -4,7 +4,7 @@ const fs = require("fs");
 async function main() {
   console.log("🔧 Setting JavaScript source code on contract...\n");
 
-  const CONTRACT_ADDRESS = "0xD66544E49c7407AcdE0a577BFB176f950a18DAAA";
+  const CONTRACT_ADDRESS = "0x1f4ae8c5fBc9B6350e5A01B93687fCcBfFA36061";
 
   // Read the source code from functions-source.js
   const sourceCode = fs.readFileSync("./functions-source.js", "utf8");
@@ -67,7 +67,8 @@ async function main() {
     console.error(error.message);
     
     if (error.message.includes("insufficient funds")) {
-      console.log("\n💡 Tip: Make sure you have enough Arbitrum Sepolia ETH for gas");
+      console.log("\n💡 Tip: Get free Arbitrum Sepolia ETH from:");
+      console.log("   https://faucet.quicknode.com/arbitrum/sepolia");
     }
     
     process.exit(1);

@@ -3,7 +3,7 @@ const hre = require("hardhat");
 async function main() {
   console.log("📊 Checking YouTube Oracle Status...\n");
 
-  const CONTRACT_ADDRESS = "0xD66544E49c7407AcdE0a577BFB176f950a18DAAA";
+  const CONTRACT_ADDRESS = "0x1f4ae8c5fBc9B6350e5A01B93687fCcBfFA36061";
 
   const contract = await hre.ethers.getContractAt(
     "YouTubeOracleFunctions",
@@ -65,7 +65,7 @@ async function main() {
     if (sourceCode && sourceCode.length > 0) {
       console.log("   ✅ Set (" + sourceCode.length + " characters)");
     } else {
-      console.log("   ❌ Not set - Run: npx hardhat run scripts/set-source-code.js --network arbitrumSepolia");
+      console.log("   ❌ Not set - Run: npm run oracle:setup");
     }
 
     console.log("\n═".repeat(60));
@@ -73,8 +73,25 @@ async function main() {
     console.log("\n💡 Quick Actions:");
     console.log("   Request Views: contract.requestViews()");
     console.log("   Request Likes: contract.requestLikes()");
-    console.log("   Check on Arbiscan: https://sepolia.arbiscan.io/address/" + CONTRACT_ADDRESS);
-    console.log("   Check Subscription: https://functions.chain.link/arbitrum-sepolia/" + subscriptionId);
+    
+    // Dynamic explorer URL based on network
+    const networkExplorers = {
+      polygon: "https://polygonscan.com/address/",
+      arbitrumSepolia: "https://sepolia.arbiscan.io/address/",
+      sepolia: "https://sepolia.etherscan.io/address/",
+      mainnet: "https://etherscan.io/address/"
+    };
+    const explorerUrl = networkExplorers[hre.network.name] || "https://etherscan.io/address/";
+    console.log("   Check on Explorer:", explorerUrl + CONTRACT_ADDRESS);
+    
+    const networkSubscriptionUrls = {
+      polygon: "https://functions.chain.link/polygon/",
+      arbitrumSepolia: "https://functions.chain.link/arbitrum-sepolia/"
+    };
+    const subscriptionUrl = networkSubscriptionUrls[hre.network.name];
+    if (subscriptionUrl) {
+      console.log("   Check Subscription:", subscriptionUrl + subscriptionId);
+    }
 
   } catch (error) {
     console.error("❌ Error reading contract:", error.message);

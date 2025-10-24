@@ -3,7 +3,7 @@ const hre = require("hardhat");
 async function main() {
   console.log("📊 Requesting YouTube Views...\n");
 
-  const CONTRACT_ADDRESS = "0xD66544E49c7407AcdE0a577BFB176f950a18DAAA";
+  const CONTRACT_ADDRESS = "0x1f4ae8c5fBc9B6350e5A01B93687fCcBfFA36061";
 
   const contract = await hre.ethers.getContractAt(
     "YouTubeOracleFunctions",
@@ -44,7 +44,7 @@ async function main() {
 
     console.log("\n⏰ Please wait 1-2 minutes for Chainlink Functions to fulfill the request...");
     console.log("\n📋 To check the result:");
-    console.log("   npx hardhat run scripts/check-status.js --network arbitrumSepolia");
+    console.log("   npm run oracle:status");
     console.log("\nOr check on Arbiscan:");
     console.log("   https://sepolia.arbiscan.io/address/" + CONTRACT_ADDRESS + "#events");
 
