@@ -9,6 +9,7 @@
 ✅ Functions Router: 0x234a5fb5Bd614a7AA2FfAB244D603abFA0Ac5C5C
 ✅ LINK Token: 0xb1D4538B4571d411F07960EF2838Ce337FE1E80E
 ✅ YouTube Video ID: LQAFm01IOT0
+✅ Deployed Contract: 0xD66544E49c7407AcdE0a577BFB176f950a18DAAA
 ```
 
 ## 🎯 What Changed
