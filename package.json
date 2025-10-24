@@ -10,11 +10,11 @@
     "deploy": "hardhat run scripts/deploy.js --network sepolia",
     "add-consumer": "hardhat run scripts/add-consumer.js --network sepolia",
     "test": "hardhat test",
-    "oracle:status": "hardhat run scripts/check-status.js --network arbitrumSepolia",
-    "oracle:setup": "hardhat run scripts/set-source-code.js --network arbitrumSepolia",
-    "oracle:request": "hardhat run scripts/request-views.js --network arbitrumSepolia",
-    "oracle:monitor": "hardhat run scripts/monitor-events.js --network arbitrumSepolia",
-    "oracle:add-consumer": "hardhat run scripts/add-consumer-functions.js --network arbitrumSepolia 0xD66544E49c7407AcdE0a577BFB176f950a18DAAA",
+    "oracle:status": "node_modules/.bin/hardhat run scripts/check-status.js --network arbitrumSepolia",
+    "oracle:setup": "node_modules/.bin/hardhat run scripts/set-source-code.js --network arbitrumSepolia",
+    "oracle:request": "node_modules/.bin/hardhat run scripts/request-views.js --network arbitrumSepolia",
+    "oracle:monitor": "node_modules/.bin/hardhat run scripts/monitor-events.js --network arbitrumSepolia",
+    "oracle:add-consumer": "node_modules/.bin/hardhat run scripts/add-consumer-functions.js --network arbitrumSepolia 0xD66544E49c7407AcdE0a577BFB176f950a18DAAA",
     "web": "npx serve public -p 3000"
   },
   "keywords": [
