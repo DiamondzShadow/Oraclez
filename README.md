@@ -1,8 +1,23 @@
 # YouTube Stats Chainlink External Adapter
 
-A Chainlink External Adapter that fetches YouTube video statistics (views and likes) and manages state using Supabase. This adapter triggers events based on configurable thresholds for views and likes.
+A complete Chainlink integration that fetches YouTube video statistics (views and likes) and manages state using Supabase. Includes both an **External Adapter** (off-chain) and a **Smart Contract** (on-chain) for end-to-end functionality.
 
-## Features
+## 🏗️ Architecture
+
+This project consists of two main components:
+
+1. **External Adapter** (`server.js`) - Off-chain Node.js service that:
+   - Fetches YouTube API data
+   - Manages state in Supabase
+   - Responds to Chainlink oracle requests
+
+2. **Smart Contract** (`contracts/YouTubeOracleConsumer.sol`) - On-chain Solidity contract that:
+   - Makes Chainlink oracle requests
+   - Receives YouTube statistics on-chain
+   - Triggers events at configurable thresholds
+   - Works with Chainlink subscriptions
+
+## ✨ Features
 
 - 🎥 Fetches real-time YouTube video statistics (views and likes)
 - 💾 Persistent state management using Supabase
@@ -11,12 +26,58 @@ A Chainlink External Adapter that fetches YouTube video statistics (views and li
   - **Likes**: Triggers at every 25 likes milestone
 - 🔄 Supports multiple video IDs with independent state tracking
 - 🚀 Express-based REST API compatible with Chainlink node requests
+- ⛓️ Production-ready Solidity smart contract
+- 📊 Chainlink subscription support (Subscription #532 ready)
+
+## 📦 What's Included
+
+```
+/workspace/
+├── server.js                           # External Adapter (off-chain)
+├── contracts/
+│   └── YouTubeOracleConsumer.sol      # Smart Contract (on-chain)
+├── scripts/
+│   ├── deploy.js                       # Hardhat deployment script
+│   └── add-consumer.js                 # Add contract to Chainlink subscription
+├── hardhat.config.js                   # Hardhat configuration
+├── CHAINLINK_DEPLOYMENT.md             # Comprehensive deployment guide
+├── SUBSCRIPTION_532_SETUP.md           # Quick start for subscription 532
+├── SUPABASE_SETUP.md                   # Database setup guide
+└── package.json                        # Dependencies & scripts
+```
+
+## 🚀 Quick Start
+
+### For Subscription 532 Users
+
+**Your subscription is already configured!**
+- Subscription ID: `532`
+- Balance: `5 LINK`
+- Network: `Sepolia Testnet`
+
+Follow the quick guide: **[SUBSCRIPTION_532_SETUP.md](./SUBSCRIPTION_532_SETUP.md)**
+
+### For New Users
+
+1. **Setup External Adapter** (Off-chain service)
+2. **Deploy Smart Contract** (On-chain consumer)
+3. **Configure Chainlink Jobs**
+4. **Connect & Test**
+
+See the full guide: **[CHAINLINK_DEPLOYMENT.md](./CHAINLINK_DEPLOYMENT.md)**
 
 ## Prerequisites
 
+### External Adapter (Off-chain)
 - Node.js (>= 14.0.0)
 - YouTube Data API v3 key
 - Supabase account and project
+
+### Smart Contract (On-chain)
+- MetaMask or Web3 wallet
+- Sepolia testnet ETH (for gas)
+- Chainlink subscription or LINK tokens
+- Hardhat (for deployment)
 
 ## Installation
 
@@ -184,21 +245,77 @@ curl -X POST http://localhost:8080 \
 - State is loaded on first request and updated after each request
 - All state changes are persisted to Supabase
 
-## Integration with Chainlink
+## 🔗 Smart Contract Deployment
 
-To use this adapter with a Chainlink node:
+### Using Hardhat
 
-1. Deploy this adapter to a server accessible by your Chainlink node
-2. Create a bridge in your Chainlink node pointing to this adapter's URL
-3. Use the bridge in your job specifications
-4. The adapter will return the appropriate data for your smart contracts
+```bash
+# Install Hardhat dependencies
+npm install
 
-Example job specification snippet:
-```toml
-[type="bridge" name="youtube-stats" requestData="{\\"id\\": $(jobRun.id), \\"data\\": {\\"videoId\\": \\"YOUR_VIDEO_ID\\", \\"endpoint\\": \\"views\\"}}"]
+# Compile contracts
+npm run compile
+
+# Configure environment
+cp .env.example .env
+# Add: PRIVATE_KEY, SEPOLIA_RPC_URL, ETHERSCAN_API_KEY
+
+# Deploy to Sepolia
+npm run deploy
+
+# Add contract to subscription 532
+npm run add-consumer
 ```
 
+### Using Remix
+
+1. Open [Remix IDE](https://remix.ethereum.org)
+2. Copy `contracts/YouTubeOracleConsumer.sol`
+3. Compile with Solidity 0.8.7+
+4. Deploy to Sepolia with constructor parameters
+5. Add contract address to subscription 532
+
+**Detailed instructions:** [CHAINLINK_DEPLOYMENT.md](./CHAINLINK_DEPLOYMENT.md)
+
+## 🎯 Integration with Chainlink
+
+### Complete Flow
+
+```
+1. Smart Contract (on-chain)
+   └─> Makes Chainlink request
+2. Chainlink Oracle
+   └─> Triggers Chainlink Node
+3. Chainlink Node
+   └─> Executes job → calls external adapter
+4. External Adapter (this server)
+   └─> Fetches YouTube data
+   └─> Saves state to Supabase
+   └─> Returns data to node
+5. Chainlink Node
+   └─> Fulfills on-chain request
+6. Smart Contract
+   └─> Receives data & emits events
+```
+
+### Bridge Configuration
+
+Create a bridge in your Chainlink node:
+
+```json
+{
+  "name": "youtube-stats",
+  "url": "https://your-adapter-url.com"
+}
+```
+
+### Job Specifications
+
+See [CHAINLINK_DEPLOYMENT.md](./CHAINLINK_DEPLOYMENT.md) for complete job specs for both views and likes endpoints.
+
 ## Environment Variables
+
+### External Adapter
 
 | Variable | Required | Description | Default |
 |----------|----------|-------------|---------|
@@ -207,6 +324,18 @@ Example job specification snippet:
 | SUPABASE_URL | Yes | Supabase project URL | - |
 | SUPABASE_ANON_KEY | Yes | Supabase anonymous key | - |
 | INITIAL_LIKES_COUNT | No | Initial likes count for new videos | 0 |
+
+### Smart Contract Deployment
+
+| Variable | Required | Description |
+|----------|----------|-------------|
+| PRIVATE_KEY | Yes | Wallet private key for deployment |
+| SEPOLIA_RPC_URL | Yes | Sepolia RPC endpoint (Infura/Alchemy) |
+| ETHERSCAN_API_KEY | No | For contract verification |
+| VIEWS_JOB_ID | No | Chainlink job ID for views (or use 0x0 placeholder) |
+| LIKES_JOB_ID | No | Chainlink job ID for likes (or use 0x0 placeholder) |
+| YOUTUBE_VIDEO_ID | No | Default video to track (default: "dQw4w9WgXcQ") |
+| CONSUMER_ADDRESS | No | For add-consumer script |
 
 ## Error Handling
 
@@ -250,10 +379,87 @@ This adapter can be deployed to:
 - DigitalOcean App Platform
 - Any platform supporting Node.js applications
 
-## License
+## 📚 Documentation
+
+- **[CHAINLINK_DEPLOYMENT.md](./CHAINLINK_DEPLOYMENT.md)** - Complete deployment guide
+- **[SUBSCRIPTION_532_SETUP.md](./SUBSCRIPTION_532_SETUP.md)** - Quick start for subscription 532
+- **[SUPABASE_SETUP.md](./SUPABASE_SETUP.md)** - Database setup guide
+- **[START_GUIDE.md](./START_GUIDE.md)** - External adapter quick start
+- **[DEPLOYMENT_READY.md](./DEPLOYMENT_READY.md)** - Post-setup checklist
+
+## 🧪 Testing
+
+### Test External Adapter
+
+```bash
+npm start
+
+# In another terminal
+curl -X POST http://localhost:8080 \
+  -H "Content-Type: application/json" \
+  -d '{"id":"test","data":{"videoId":"dQw4w9WgXcQ","endpoint":"views"}}'
+```
+
+### Test Smart Contract
+
+```bash
+# Using Hardhat
+npx hardhat console --network sepolia
+
+# In console:
+const contract = await ethers.getContractAt("YouTubeOracleConsumer", "YOUR_ADDRESS");
+await contract.requestViews();
+await contract.latestViews(); // Check after 1-2 minutes
+```
+
+## 🛠️ NPM Scripts
+
+```bash
+# External Adapter
+npm start              # Start adapter server
+npm run dev            # Start with auto-reload
+
+# Smart Contract
+npm run compile        # Compile Solidity contracts
+npm run deploy         # Deploy to Sepolia
+npm run add-consumer   # Add contract to subscription 532
+npm test               # Run tests
+```
+
+## 🔐 Security
+
+- ✅ `.gitignore` protects sensitive files
+- ✅ Environment variables for all secrets
+- ✅ Supabase Row Level Security enabled
+- ✅ Smart contract uses OpenZeppelin libraries
+- ✅ Owner-only functions protected
+
+**Never commit:**
+- `.env` file
+- Private keys
+- API keys
+
+## 📊 Monitoring
+
+- **Smart Contract**: [Sepolia Etherscan](https://sepolia.etherscan.io/)
+- **Subscription**: [Chainlink VRF Manager](https://vrf.chain.link/)
+- **Database**: [Supabase Dashboard](https://app.supabase.com/)
+- **Adapter Logs**: Check server console or logs
+
+## 🤝 Contributing
+
+Contributions welcome! Please:
+1. Fork the repository
+2. Create a feature branch
+3. Submit a pull request
+
+## 📄 License
 
 MIT
 
-## Support
+## 💬 Support
 
-For issues and questions, please open an issue in the repository.
+For issues and questions:
+- Open an issue in the repository
+- Check documentation files listed above
+- Review Chainlink docs: https://docs.chain.link/
