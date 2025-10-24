@@ -3,7 +3,7 @@ const hre = require("hardhat");
 async function main() {
   console.log("📊 Checking YouTube Oracle Status...\n");
 
-  const CONTRACT_ADDRESS = "0xD66544E49c7407AcdE0a577BFB176f950a18DAAA";
+  const CONTRACT_ADDRESS = "0x1f4ae8c5fBc9B6350e5A01B93687fCcBfFA36061";
 
   const contract = await hre.ethers.getContractAt(
     "YouTubeOracleFunctions",
