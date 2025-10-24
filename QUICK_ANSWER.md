@@ -72,6 +72,14 @@ npx hardhat run scripts/add-consumer-functions.js --network arbitrumSepolia YOUR
 
 ---
 
+## Deployed Contract Address
+
+Your current contract: **`0xD66544E49c7407AcdE0a577BFB176f950a18DAAA`**
+
+This contract is configured for **Chainlink Functions** (subscription 532) which is serverless.
+
+---
+
 ## Why a New Contract?
 
 Your old contract address `0x4dba078729b72704db89520530922063932E43a7` was for **Chainlink Any API** (requires node).

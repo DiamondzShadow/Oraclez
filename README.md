@@ -48,16 +48,16 @@ This project consists of two main components:
 
 ## 🚀 Quick Start
 
-### For Subscription 532 Users
+### ⚡ Deployed Contract Ready!
 
-**Your subscription is already configured!**
-- Subscription ID: `532`
-- Balance: `5 LINK`
-- Network: `Sepolia Testnet`
+**Your Oracklez contract is already deployed:**  
+Contract: `0xD66544E49c7407AcdE0a577BFB176f950a18DAAA`  
+Network: Arbitrum Sepolia  
 
-Follow the quick guide: **[SUBSCRIPTION_532_SETUP.md](./SUBSCRIPTION_532_SETUP.md)**
+**➡️ [QUICK SETUP GUIDE](./QUICK_SETUP.md)** - Get started in 3 steps!  
+**➡️ [IMPLEMENTATION GUIDE](./ORACLEZ_IMPLEMENTATION.md)** - Full integration docs
 
-### For New Users
+### For New Deployments
 
 1. **Setup External Adapter** (Off-chain service)
 2. **Deploy Smart Contract** (On-chain consumer)

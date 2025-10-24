@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oracklez - YouTube Oracle</title>
+    <script src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            margin-bottom: 20px;
+        }
+        
+        .status {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        
+        .status.connected {
+            background: #10b981;
+            color: white;
+        }
+        
+        .status.disconnected {
+            background: #ef4444;
+            color: white;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .stat-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+        }
+        
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.9;
+            margin-bottom: 10px;
+        }
+        
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+        }
+        
+        .video-info {
+            background: #f3f4f6;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        
+        .video-info a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        
+        .buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+        
+        button {
+            flex: 1;
+            min-width: 150px;
+            padding: 15px 30px;
+            font-size: 1em;
+            font-weight: bold;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+        
+        .btn-primary:hover:not(:disabled) {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-secondary {
+            background: #10b981;
+            color: white;
+        }
+        
+        .btn-secondary:hover:not(:disabled) {
+            background: #059669;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.4);
+        }
+        
+        .btn-connect {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #667eea;
+        }
+        
+        .alert {
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+        }
+        
+        .alert-info {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+        
+        .alert-success {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        
+        .alert-error {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+        
+        .contract-info {
+            font-size: 0.9em;
+            color: #6b7280;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #e5e7eb;
+        }
+        
+        .contract-info a {
+            color: #667eea;
+            text-decoration: none;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s linear infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔮 Oracklez</h1>
+            <p>YouTube Statistics Oracle on Arbitrum Sepolia</p>
+        </div>
+
+        <div class="card">
+            <div id="connectionStatus" class="status disconnected">
+                🔴 Not Connected
+            </div>
+
+            <div id="notConnected">
+                <h2>Connect Your Wallet</h2>
+                <p style="margin: 15px 0; color: #6b7280;">
+                    Connect your MetaMask wallet to interact with the YouTube Oracle
+                </p>
+                <button class="btn-connect" onclick="connectWallet()">
+                    Connect MetaMask
+                </button>
+            </div>
+
+            <div id="connected" style="display: none;">
+                <h2>YouTube Oracle Dashboard</h2>
+                
+                <div id="videoInfo" class="video-info">
+                    <div><strong>Video ID:</strong> <span id="videoId">Loading...</span></div>
+                    <div style="margin-top: 5px;">
+                        <a id="videoLink" href="#" target="_blank">Watch on YouTube →</a>
+                    </div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-box">
+                        <div class="stat-label">📊 VIEWS</div>
+                        <div class="stat-value" id="views">-</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">❤️ LIKES</div>
+                        <div class="stat-value" id="likes">-</div>
+                    </div>
+                </div>
+
+                <div class="buttons">
+                    <button class="btn-primary" onclick="requestViews()" id="btnViews">
+                        📊 Update Views
+                    </button>
+                    <button class="btn-primary" onclick="requestLikes()" id="btnLikes">
+                        ❤️ Update Likes
+                    </button>
+                    <button class="btn-secondary" onclick="loadStats()">
+                        🔄 Refresh
+                    </button>
+                </div>
+
+                <div id="messages"></div>
+
+                <div class="contract-info">
+                    <strong>Contract:</strong> 0xD66544E49c7407AcdE0a577BFB176f950a18DAAA<br>
+                    <strong>Network:</strong> Arbitrum Sepolia<br>
+                    <a href="https://sepolia.arbiscan.io/address/0xD66544E49c7407AcdE0a577BFB176f950a18DAAA" target="_blank">
+                        View on Arbiscan →
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const CONTRACT_ADDRESS = "0xD66544E49c7407AcdE0a577BFB176f950a18DAAA";
+        const ARBITRUM_SEPOLIA_CHAIN_ID = "0x66eee"; // 421614 in hex
+
+        const ABI = [
+            "function latestViews() view returns (uint256)",
+            "function latestLikes() view returns (uint256)",
+            "function youtubeVideoId() view returns (string)",
+            "function requestViews() returns (bytes32)",
+            "function requestLikes() returns (bytes32)",
+            "function owner() view returns (address)",
+            "event ViewsUpdated(uint256 newViews, bytes32 requestId)",
+            "event LikesUpdated(uint256 newLikes, bytes32 requestId)"
+        ];
+
+        let provider;
+        let signer;
+        let contract;
+        let userAddress;
+
+        async function connectWallet() {
+            try {
+                if (typeof window.ethereum === 'undefined') {
+                    showMessage('Please install MetaMask!', 'error');
+                    return;
+                }
+
+                // Request account access
+                await window.ethereum.request({ method: 'eth_requestAccounts' });
+                
+                provider = new ethers.providers.Web3Provider(window.ethereum);
+                signer = provider.getSigner();
+                userAddress = await signer.getAddress();
+                
+                // Check network
+                const network = await provider.getNetwork();
+                if (network.chainId !== 421614) {
+                    showMessage('Please switch to Arbitrum Sepolia network', 'error');
+                    try {
+                        await window.ethereum.request({
+                            method: 'wallet_switchEthereumChain',
+                            params: [{ chainId: ARBITRUM_SEPOLIA_CHAIN_ID }],
+                        });
+                    } catch (switchError) {
+                        if (switchError.code === 4902) {
+                            // Chain not added, add it
+                            await window.ethereum.request({
+                                method: 'wallet_addEthereumChain',
+                                params: [{
+                                    chainId: ARBITRUM_SEPOLIA_CHAIN_ID,
+                                    chainName: 'Arbitrum Sepolia',
+                                    nativeCurrency: {
+                                        name: 'ETH',
+                                        symbol: 'ETH',
+                                        decimals: 18
+                                    },
+                                    rpcUrls: ['https://sepolia-rollup.arbitrum.io/rpc'],
+                                    blockExplorerUrls: ['https://sepolia.arbiscan.io/']
+                                }]
+                            });
+                        }
+                    }
+                }
+
+                contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
+                
+                document.getElementById('notConnected').style.display = 'none';
+                document.getElementById('connected').style.display = 'block';
+                document.getElementById('connectionStatus').className = 'status connected';
+                document.getElementById('connectionStatus').textContent = '🟢 Connected: ' + userAddress.substring(0, 6) + '...' + userAddress.substring(38);
+
+                await loadStats();
+                setupEventListeners();
+
+            } catch (error) {
+                console.error('Connection error:', error);
+                showMessage('Error connecting wallet: ' + error.message, 'error');
+            }
+        }
+
+        async function loadStats() {
+            try {
+                const videoId = await contract.youtubeVideoId();
+                const views = await contract.latestViews();
+                const likes = await contract.latestLikes();
+
+                document.getElementById('videoId').textContent = videoId;
+                document.getElementById('videoLink').href = 'https://www.youtube.com/watch?v=' + videoId;
+                document.getElementById('views').textContent = formatNumber(views.toString());
+                document.getElementById('likes').textContent = formatNumber(likes.toString());
+
+            } catch (error) {
+                console.error('Error loading stats:', error);
+                showMessage('Error loading stats: ' + error.message, 'error');
+            }
+        }
+
+        async function requestViews() {
+            const btn = document.getElementById('btnViews');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner"></span> Requesting...';
+
+            try {
+                const owner = await contract.owner();
+                if (owner.toLowerCase() !== userAddress.toLowerCase()) {
+                    showMessage('Only the contract owner can request updates', 'error');
+                    return;
+                }
+
+                const tx = await contract.requestViews();
+                showMessage('Request sent! Transaction: ' + tx.hash.substring(0, 10) + '...', 'info');
+                
+                await tx.wait();
+                showMessage('Request confirmed! Please wait 1-2 minutes for Chainlink to fulfill the request.', 'success');
+                
+                setTimeout(loadStats, 120000); // Reload after 2 minutes
+
+            } catch (error) {
+                console.error('Error:', error);
+                showMessage('Error: ' + error.message, 'error');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '📊 Update Views';
+            }
+        }
+
+        async function requestLikes() {
+            const btn = document.getElementById('btnLikes');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner"></span> Requesting...';
+
+            try {
+                const owner = await contract.owner();
+                if (owner.toLowerCase() !== userAddress.toLowerCase()) {
+                    showMessage('Only the contract owner can request updates', 'error');
+                    return;
+                }
+
+                const tx = await contract.requestLikes();
+                showMessage('Request sent! Transaction: ' + tx.hash.substring(0, 10) + '...', 'info');
+                
+                await tx.wait();
+                showMessage('Request confirmed! Please wait 1-2 minutes for Chainlink to fulfill the request.', 'success');
+                
+                setTimeout(loadStats, 120000); // Reload after 2 minutes
+
+            } catch (error) {
+                console.error('Error:', error);
+                showMessage('Error: ' + error.message, 'error');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '❤️ Update Likes';
+            }
+        }
+
+        function setupEventListeners() {
+            contract.on("ViewsUpdated", (newViews, requestId) => {
+                showMessage('🎉 Views updated: ' + formatNumber(newViews.toString()), 'success');
+                loadStats();
+            });
+
+            contract.on("LikesUpdated", (newLikes, requestId) => {
+                showMessage('🎉 Likes updated: ' + formatNumber(newLikes.toString()), 'success');
+                loadStats();
+            });
+        }
+
+        function showMessage(text, type) {
+            const messagesDiv = document.getElementById('messages');
+            const alert = document.createElement('div');
+            alert.className = 'alert alert-' + type;
+            alert.textContent = text;
+            messagesDiv.innerHTML = '';
+            messagesDiv.appendChild(alert);
+
+            setTimeout(() => {
+                alert.remove();
+            }, 10000);
+        }
+
+        function formatNumber(num) {
+            return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+
+        // Auto-connect if already connected
+        window.addEventListener('load', async () => {
+            if (typeof window.ethereum !== 'undefined') {
+                const accounts = await window.ethereum.request({ method: 'eth_accounts' });
+                if (accounts.length > 0) {
+                    connectWallet();
+                }
+            }
+        });
+
+        // Handle account changes
+        if (typeof window.ethereum !== 'undefined') {
+            window.ethereum.on('accountsChanged', (accounts) => {
+                if (accounts.length > 0) {
+                    window.location.reload();
+                } else {
+                    document.getElementById('connected').style.display = 'none';
+                    document.getElementById('notConnected').style.display = 'block';
+                }
+            });
+
+            window.ethereum.on('chainChanged', () => {
+                window.location.reload();
+            });
+        }
+    </script>
+</body>
+</html>
